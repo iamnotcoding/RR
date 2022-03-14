@@ -22,4 +22,4 @@ int main(void)
     }
 
     processes = GetProcesses(input);
-}
+} 
