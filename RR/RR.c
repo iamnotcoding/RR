@@ -70,7 +70,6 @@ Processes GetProcesses(FILE *in)
 			&(processes.processList[i].pid), &(processes.processList[i].run),
 			&(processes.processList[i].io), &(processes.processList[i].repeat));
 		
-		processes.processesNum++;
 
 		if ((r != 5 && r != EOF) || ferror(in))
 		{
@@ -86,6 +85,8 @@ Processes GetProcesses(FILE *in)
 		{
 			break;
 		}
+	
+		processes.processesNum++;
 	}
 
 	return processes;
@@ -186,7 +187,11 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 		{
 			clock++;
 
-			if (!IsQueueEmpty(*pJobQueue) && clock >= Peek(*pJobQueue).time)
+			if (IsQueueEmpty(*pReadyQueue) && IsQueueEmpty(*pJobQueue))
+			{
+				break;
+			}
+			else if (!IsQueueEmpty(*pJobQueue) && clock >= Peek(*pJobQueue).time)
 			{
 				curProcess = DeQueue(pJobQueue);
 			}
@@ -200,11 +205,6 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 				{
 					continue;
 				}
-			}
-
-			if (IsQueueEmpty(*pReadyQueue) && IsQueueEmpty(*pJobQueue))
-			{
-				break;
 			}
 
 			if (curProcess.repeat > 0)
@@ -231,7 +231,7 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 
 				curProcess.repeat--;
 				// puts in the queue because the process hasn't been fnished yet
-				EnQueue(pReadyQueue, curProcess);
+				EnQueue(pJobQueue, curProcess);
 			}
 			else
 			{
