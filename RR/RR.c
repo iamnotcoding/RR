@@ -225,7 +225,7 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 
 				for (unsigned i = 0; i < curProcess.io; i++)
 				{
-					fprintf(out, "clock : %u process : %u compute\n", clock,
+					fprintf(out, "clock : %u process : %u I/O\n", clock,
 							curProcess.pid);
 
 					clock++;
