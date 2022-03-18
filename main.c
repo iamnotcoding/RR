@@ -1,7 +1,7 @@
 #include <errno.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "RR/RR.h"
 #include "RR/process.h"
@@ -19,12 +19,12 @@ int main(void)
 		char tempStr[100];
 
 		sprintf(tempStr, "cannot open : %s %s", INPUT_FILE, strerror(errno));
+
 		PRINT_ERR(tempStr);
 	}
 
 	processes = GetProcesses(input);
 	RR(stdout, processes, 3, 0);
-	
+
 	free(processes.processList);
 }
-

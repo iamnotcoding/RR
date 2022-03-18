@@ -5,12 +5,14 @@
 <h4> BUILD </h4>
 
 <p>
-mkdir build <br>
-cd build <br>
-cmake .. <br>
-  make <br> </p>
+  mkdir build <br>
+  cd build <br>
+  cmake .. <br>
+  make <br>
+</p>
 
 <h4> EXECUTE </h4>
 <p>
-touch processes.txt <br>
-  ./main </p> 
+  touch processes.txt <br>
+  ./main
+</p>
