@@ -2,11 +2,12 @@
 #define QUEUE_H
 
 #include <stdbool.h>
+#include "../RR/process.h"
 
 // data types definition
 
 // if you change QData, you also have to change AssignQData()
-typedef int QData;
+typedef Process QData;
 
 typedef struct _queue
 {

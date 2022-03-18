@@ -7,7 +7,7 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 add_library(RR STATIC RR.c)
 
-target_compile_options(RR PRIVATE -g3 -Wall -Wextra -pedantic-errors -O1)
+target_compile_options(RR PRIVATE -g3 -Wall -Wextra -pedantic-errors -O0)
 
 
 
