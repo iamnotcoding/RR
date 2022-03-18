@@ -1,14 +1,16 @@
 # RR
 
-<h3> how to use <h3>
+<h3> how to use </h3>
 
-<h4> BUILD <h4>
+<h4> BUILD </h4>
 
-mkdir build
-cd build
-cmake ..
-make
+<p>
+mkdir build <br>
+cd build <br>
+cmake .. <br>
+  make <br> </p>
 
-<h4> execute <h4>
+<h4> EXECUTE </h4>
+<p>
 touch processes.txt <br>
-./main 
+  ./main </p> 
