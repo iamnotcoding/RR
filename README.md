@@ -10,5 +10,5 @@ cmake ..
 make
 
 <h4> execute <h4>
-touch processes.txt
+touch processes.txt <br>
 ./main 
