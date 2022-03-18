@@ -89,6 +89,7 @@ Processes GetProcesses(FILE *in)
 	}
 
 	return processes;
+<<<<<<< HEAD
 }
 
 int RunCmp(const void *pA, const void *pB)
@@ -255,3 +256,6 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 		} while (true);
 	}
 }
+=======
+} 
+>>>>>>> 096304d71ae40104a8ba080b13b20feb97669800
