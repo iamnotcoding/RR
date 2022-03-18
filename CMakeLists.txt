@@ -14,4 +14,4 @@ add_executable(main main.c)
 target_link_libraries(main RR)
 target_link_libraries(main queue)
 
-target_compile_options(main PRIVATE -g3 -Wall -Wextra -pedantic-errors -O1)
+target_compile_options(main PRIVATE -g3 -Wall -Wextra -pedantic-errors -O0)

@@ -69,6 +69,8 @@ Processes GetProcesses(FILE *in)
 			in, "%u %u %u %u %u", &(processes.processList[i].time),
 			&(processes.processList[i].pid), &(processes.processList[i].run),
 			&(processes.processList[i].io), &(processes.processList[i].repeat));
+		
+		processes.processesNum++;
 
 		if ((r != 5 && r != EOF) || ferror(in))
 		{
@@ -84,8 +86,6 @@ Processes GetProcesses(FILE *in)
 		{
 			break;
 		}
-
-		processes.processesNum++;
 	}
 
 	return processes;
@@ -95,11 +95,11 @@ int RunCmp(const void *pA, const void *pB)
 {
 	int result;
 
-	if (((Process *)pA)->run > ((Process *)pB)->run)
+	if (((Process *)pA)->time > ((Process *)pB)->time)
 	{
 		result = 1;
 	}
-	else if (((Process *)pA)->run < ((Process *)pB)->run)
+	else if (((Process *)pA)->time < ((Process *)pB)->time)
 	{
 		result = -1;
 	}
@@ -113,10 +113,10 @@ int RunCmp(const void *pA, const void *pB)
 
 void Delay(double s)
 {
-	#if 0
+	#if 1
 #ifdef __unix__
 
-	usleep(s * 100000000);
+	usleep(s * 1000000);
 
 #elif defined(_WIN32) || defined(_WIN64)
 
@@ -128,7 +128,6 @@ void Delay(double s)
 	time_t start, end;
 
 	start = clock();
-
 	while ((double)(start - clock()) / CLOCKS_PER_SEC <= s)
 	{
 	}
@@ -149,7 +148,6 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 
 		return;
 	}
-
 	processesCopy.processList =
 		malloc(sizeof *(processes.processList) * processes.processesNum);
 
@@ -172,15 +170,13 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 
 	// going to use processesCopy instead of processes from now on
 
-	qsort(processes.processList, processes.processesNum,
-		  sizeof *(processes.processList), RunCmp);
+	qsort(processesCopy.processList, processesCopy.processesNum,
+		  sizeof *(processesCopy.processList), RunCmp);
 
 	for (size_t i = 0; i < processesCopy.processesNum; i++)
 	{
 		EnQueue(pJobQueue, processesCopy.processList[i]);
 	}
-
-	puts("hi");
 
 	if (processesCopy.processesNum > 0)
 	{
@@ -225,7 +221,7 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 
 				for (unsigned i = 0; i < curProcess.io; i++)
 				{
-					fprintf(out, "clock : %u process : %u I/O\n", clock,
+					fprintf(out, "clock : %u process : %u IO\n", clock,
 							curProcess.pid);
 
 					clock++;
@@ -245,11 +241,14 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 				{
 					fprintf(out, "clock : %u process : %u compute\n", clock,
 							curProcess.pid);
-				
+					
 					clock++;
 
 					Delay(delaySec);
 				}
+
+				fprintf(out, "clock : %u process : %u ended\n", clock,
+							curProcess.pid);
 			}
 
 		} while (true);

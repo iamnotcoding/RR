@@ -8,10 +8,12 @@
 #include "print-err.h"
 
 #define INPUT_FILE "processes.txt"
-
+#define OUTPUT_FILE "result.txt"
 int main(void)
 {
 	FILE *input = fopen(INPUT_FILE, "r");
+	FILE *output = fopen(OUTPUT_FILE, "w+");
+
 	Processes processes;
 
 	if (input == NULL)
@@ -24,7 +26,8 @@ int main(void)
 	}
 
 	processes = GetProcesses(input);
-	RR(stdout, processes, 3, 0);
 
-	free(processes.processList);
+	RR(output, processes, 3, 0);
+
+	//free(output.processList);
 }
