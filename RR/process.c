@@ -53,7 +53,7 @@ Processes GetProcesses(FILE *in)
 		{
 			char tempStr[100];
 
-			sprintf(tempStr, "processes.txt invalid format at line : %zu", i);
+			sprintf(tempStr, "processes.txt invalid format at line(approximately) : %zu", i + 1);
 
 			PRINT_ERR(tempStr);
 
