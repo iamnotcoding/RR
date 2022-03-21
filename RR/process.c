@@ -29,7 +29,7 @@ Processes GetProcesses(FILE *in)
 			processes.processList =
 				realloc(processes.processList,
 						sizeof *processes.processList * (i / 10 + 1) *
-							10); // default size
+							100); // default size
 
 			if (processes.processList == NULL)
 			{
@@ -53,7 +53,9 @@ Processes GetProcesses(FILE *in)
 		{
 			char tempStr[100];
 
-			sprintf(tempStr, "processes.txt invalid format at line(approximately) : %zu", i + 1);
+			sprintf(tempStr,
+					"processes.txt invalid format at line(approximately) : %zu",
+					i + 1);
 
 			PRINT_ERR(tempStr);
 
