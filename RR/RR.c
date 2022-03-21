@@ -27,71 +27,6 @@
 #include "print-err.h"
 #include "process.h"
 
-// the caller is reponsible for freeing returned memory
-// returns NULL if failed
-Processes GetProcesses(FILE *in)
-{
-	Processes processes = {NULL, 0};
-
-	if (in == NULL)
-	{
-		PRINT_ERR("in is NULL");
-
-		return processes;
-	}
-
-	for (size_t i = 0;; i++)
-	{
-		int r;
-
-		// increase size of processList
-		if (i % 10 == 0)
-		{
-			processes.processList =
-				realloc(processes.processList,
-						sizeof *processes.processList * (i / 10 + 1) *
-							10); // default size
-
-			if (processes.processList == NULL)
-			{
-				char tempStr[100];
-
-				sprintf(tempStr, "processList allocation failed : %s",
-						strerror(errno));
-
-				PRINT_ERR(tempStr);
-
-				return processes;
-			}
-		}
-
-		r = fscanf(
-			in, "%u %u %u %u %u", &(processes.processList[i].time),
-			&(processes.processList[i].pid), &(processes.processList[i].run),
-			&(processes.processList[i].io), &(processes.processList[i].repeat));
-		
-
-		if ((r != 5 && r != EOF) || ferror(in))
-		{
-			char tempStr[100];
-
-			sprintf(tempStr, "processes.txt invalid format at line : %zu", i);
-
-			PRINT_ERR(tempStr);
-
-			return processes;
-		}
-		else if (r == EOF)
-		{
-			break;
-		}
-	
-		processes.processesNum++;
-	}
-
-	return processes;
-}
-
 int RunCmp(const void *pA, const void *pB)
 {
 	int result;
@@ -114,7 +49,7 @@ int RunCmp(const void *pA, const void *pB)
 
 void Delay(double s)
 {
-	#if 1
+#if 1
 #ifdef __unix__
 
 	usleep(s * 1000000);
@@ -187,50 +122,71 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 		{
 			clock++;
 
+			// if there are no processes to execute
 			if (IsQueueEmpty(*pReadyQueue) && IsQueueEmpty(*pJobQueue))
 			{
 				break;
 			}
-			else if (!IsQueueEmpty(*pJobQueue) && clock >= Peek(*pJobQueue).time)
+			// gets a process form the jobqueue if it's time to execute
+			else if (!IsQueueEmpty(*pJobQueue) &&
+					 clock >= Peek(*pJobQueue).time)
 			{
 				curProcess = DeQueue(pJobQueue);
 			}
 			else
 			{
+				// gets a process from the readyqueue
 				if (!IsQueueEmpty(*pReadyQueue))
 				{
 					curProcess = DeQueue(pReadyQueue);
 				}
 				else
 				{
+					// waits for a new process which is in the jobqueue
 					continue;
 				}
 			}
 
 			if (curProcess.repeat > 0)
 			{
-				for (unsigned i = 0; i < curProcess.run; i++)
+				unsigned i = 0;
+
+				// if quantum is samller than or equal to repeat, runs quantum
+				// times if qunatum is bigger than repeat, runs repeat times
+				for (; i < (quantum <= curProcess.repeat ? quantum
+														 : curProcess.repeat);
+					 i++)
 				{
-					fprintf(out, "clock : %u process : %u compute\n", clock,
-							curProcess.pid);
+					for (unsigned j = 0; j < curProcess.run; j++)
+					{
+						fprintf(out, "clock : %u process : %u compute\n", clock,
+								curProcess.pid);
 
-					clock++;
+						clock++;
 
-					Delay(delaySec);
+						Delay(delaySec);
+					}
+
+					for (unsigned j = 0; j < curProcess.io; j++)
+					{
+						fprintf(out, "clock : %u process : %u IO\n", clock,
+								curProcess.pid);
+
+						clock++;
+
+						Delay(delaySec);
+					}
 				}
 
-				for (unsigned i = 0; i < curProcess.io; i++)
+				if (quantum <= curProcess.repeat)
 				{
-					fprintf(out, "clock : %u process : %u IO\n", clock,
-							curProcess.pid);
-
-					clock++;
-
-					Delay(delaySec);
+					curProcess.repeat -= quantum; // decrease quantum
+				}
+				else
+				{
+					curProcess.repeat = 0;
 				}
 
-				curProcess.repeat--;
-				// puts in the queue because the process hasn't been fnished yet
 				EnQueue(pJobQueue, curProcess);
 			}
 			else
@@ -241,14 +197,14 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 				{
 					fprintf(out, "clock : %u process : %u compute\n", clock,
 							curProcess.pid);
-					
+
 					clock++;
 
 					Delay(delaySec);
 				}
 
 				fprintf(out, "clock : %u process : %u ended\n", clock,
-							curProcess.pid);
+						curProcess.pid);
 			}
 
 		} while (true);

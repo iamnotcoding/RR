@@ -10,7 +10,6 @@ add_subdirectory(queue)
 
 add_executable(main main.c)
 
-
 target_link_libraries(main RR)
 target_link_libraries(main queue)
 

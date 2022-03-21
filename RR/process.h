@@ -16,4 +16,7 @@ typedef struct _processes
     size_t processesNum;
 } Processes;
 
+Processes GetProcesses(FILE *in);
+void CloseProcesses(Processes processes);
+
 #endif 

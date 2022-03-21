@@ -9,10 +9,16 @@
 
 #define INPUT_FILE "processes.txt"
 #define OUTPUT_FILE "result.txt"
+
+//#define DELAY 0.1
+#define DELAY 0
+
 int main(void)
 {
-	FILE *input = fopen(INPUT_FILE, "r");
-	FILE *output = fopen(OUTPUT_FILE, "w+");
+	unsigned quantum;
+	FILE *input, *output;
+
+	input = fopen(INPUT_FILE, "r");
 
 	Processes processes;
 
@@ -25,9 +31,24 @@ int main(void)
 		PRINT_ERR(tempStr);
 	}
 
+	output = fopen(OUTPUT_FILE, "w+");
+
+	if (output == NULL)
+	{
+		char tempStr[100];
+
+		sprintf(tempStr, "cannot open : %s %s", OUTPUT_FILE, strerror(errno));
+
+		PRINT_ERR(tempStr);
+	}
+
 	processes = GetProcesses(input);
 
-	RR(output, processes, 3, 0);
+	printf("quantum : ");
+	scanf("%u", &quantum);
 
-	//free(output.processList);
+	// RR(stdout, processes, quantum, DELAY);
+	RR(output, processes, quantum, DELAY);
+
+	CloseProcesses(processes);
 }
