@@ -5,12 +5,11 @@
 #include <string.h>
 #include <unistd.h>
 
-
 #include "../queue/queue.h"
 #include "print-err.h"
 #include "process.h"
 
-int RunCmp(const void *pA, const void *pB)
+int TimeCmp(const void *pA, const void *pB)
 {
 	int result;
 
@@ -32,9 +31,7 @@ int RunCmp(const void *pA, const void *pB)
 
 void Delay(double s)
 {
-#if 1
 	usleep(s * 1000000);
-#endif
 }
 
 void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
@@ -50,6 +47,7 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 
 		return;
 	}
+
 	processesCopy.processList =
 		malloc(sizeof *(processes.processList) * processes.processesNum);
 
@@ -72,8 +70,9 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 
 	// going to use processesCopy instead of processes from now on
 
+	// sort process by time
 	qsort(processesCopy.processList, processesCopy.processesNum,
-		  sizeof *(processesCopy.processList), RunCmp);
+		  sizeof *(processesCopy.processList), TimeCmp);
 
 	for (size_t i = 0; i < processesCopy.processesNum; i++)
 	{
@@ -115,12 +114,11 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 
 			if (curProcess.repeat > 0)
 			{
-				unsigned i = 0;
-
 				// if quantum is samller than or equal to repeat, runs quantum
 				// times if qunatum is bigger than repeat, runs repeat times
-				for (; i < (quantum <= curProcess.repeat ? quantum
-														 : curProcess.repeat);
+				for (unsigned i = 0;
+					 i < (quantum <= curProcess.repeat ? quantum
+													   : curProcess.repeat);
 					 i++)
 				{
 					for (unsigned j = 0; j < curProcess.run; j++)

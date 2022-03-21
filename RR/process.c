@@ -7,7 +7,6 @@
 #include "process.h"
 
 // the caller is reponsible for freeing returned memory
-// returns NULL if failed
 Processes GetProcesses(FILE *in)
 {
 	Processes processes = {NULL, 0};
