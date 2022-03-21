@@ -16,3 +16,5 @@
   touch processes.txt <br>
   ./main
 </p>
+
+<p> results will be stored at result.txt in the current directory </p>
