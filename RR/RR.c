@@ -3,25 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// for sleep function
-
-// if unix (or linux)
-#ifdef __unix__
-
 #include <unistd.h>
 
-// if windows
-#elif defined(_WIN32) || defined(WIN32)
-
-#include <Windows.h>
-
-// if unkown os
-#else
-
-#include <time.h>
-
-#endif
 
 #include "../queue/queue.h"
 #include "print-err.h"
@@ -50,24 +33,7 @@ int RunCmp(const void *pA, const void *pB)
 void Delay(double s)
 {
 #if 1
-#ifdef __unix__
-
 	usleep(s * 1000000);
-
-#elif defined(_WIN32) || defined(_WIN64)
-
-	Sleep(s * 1000);
-
-#else
-
-	// does busy waiting
-	time_t start, end;
-
-	start = clock();
-	while ((double)(start - clock()) / CLOCKS_PER_SEC <= s)
-	{
-	}
-#endif
 #endif
 }
 
@@ -209,4 +175,8 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 
 		} while (true);
 	}
+
+	CloseProcesses(processesCopy);
+	DestroyQueue(pJobQueue);
+	DestroyQueue(pReadyQueue);
 }

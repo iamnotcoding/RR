@@ -45,10 +45,14 @@ int main(void)
 	processes = GetProcesses(input);
 
 	printf("quantum : ");
+
 	scanf("%u", &quantum);
 
 	// RR(stdout, processes, quantum, DELAY);
 	RR(output, processes, quantum, DELAY);
 
 	CloseProcesses(processes);
+
+	fclose(input);
+	fclose(output);
 }
