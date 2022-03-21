@@ -38,4 +38,4 @@
   end if
 end loop</pre>
 
-<p> results will be stored at result.txt in the current directory </p>
+<p> the result will be stored at result.txt in the current directory </p>
