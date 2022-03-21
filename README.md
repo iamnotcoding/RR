@@ -27,7 +27,7 @@
 
 <p> TIME &nbsp; PID &nbsp; RUN &nbsp; I/O &nbsp; REPEAT </p>
   
-<h3> pseudocode of process execution <h3>
+<h3> pseudocode of processes execution <h3>
 <pre>while (there’s another (RUN, I/O, REPEAT) phase for process PID) loop
   for I in 1..REPEAT loop
     do compute for RUN time units
