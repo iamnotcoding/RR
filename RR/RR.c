@@ -92,24 +92,22 @@ void RR(FILE *out, Processes processes, unsigned quantum, double delaySec)
 			{
 				break;
 			}
-			// gets a process form the jobqueue if it's time to execute
+			// gets a process from the jobqueue,
+			// if it's time to put it in to the readyqueue
 			else if (!IsQueueEmpty(*pJobQueue) &&
 					 clock >= Peek(*pJobQueue).time)
 			{
-				curProcess = DeQueue(pJobQueue);
+				EnQueue(pReadyQueue, DeQueue(pJobQueue));
+			}
+			// gets a process from the readyqueue
+			if (!IsQueueEmpty(*pReadyQueue))
+			{
+				curProcess = DeQueue(pReadyQueue);
 			}
 			else
 			{
-				// gets a process from the readyqueue
-				if (!IsQueueEmpty(*pReadyQueue))
-				{
-					curProcess = DeQueue(pReadyQueue);
-				}
-				else
-				{
-					// waits for a new process which is in the jobqueue
-					continue;
-				}
+				// waits for a new process which is in the jobqueue
+				continue;
 			}
 
 			if (curProcess.repeat > 0)
